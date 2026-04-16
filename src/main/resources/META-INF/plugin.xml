@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.lcb.ai_codereview_plugin</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>AI Code Review</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor>LCB</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+        <p>
+            <b>AI Code Review</b> reviews selected commit changes with an OpenAI-compatible model before they are committed.
+            It helps developers catch risky logic, security, performance, resource, and maintainability issues directly in
+            the IntelliJ IDEA commit workflow.
+        </p>
+        <p>
+            The plugin reads the selected VCS changes, builds a unified diff, sends it to your configured AI endpoint, and
+            shows review findings before the commit continues. If the review reports issues, you can inspect the result and
+            choose whether to continue or cancel the commit.
+        </p>
+        <ul>
+            <li>Runs automatically before commit when enabled.</li>
+            <li>Supports OpenAI-compatible chat completion APIs, custom API URL, API key, and model name.</li>
+            <li>Stores the API key in the IDE PasswordSafe instead of plain settings files.</li>
+            <li>Allows a custom review prompt, with a built-in Chinese prompt as the default.</li>
+            <li>Focuses on concrete bugs, security risks, performance problems, resource leaks, and missing tests.</li>
+        </ul>
+        <p>
+            <b>中文说明</b>
+        </p>
+        <p>
+            <b>AI Code Review</b> 会在提交代码前，使用兼容 OpenAI 的模型审查已选择的提交变更。它可以帮助开发者在
+            IntelliJ IDEA 的提交流程中提前发现潜在的逻辑错误、安全风险、性能问题、资源泄漏和可维护性问题。
+        </p>
+        <p>
+            插件会读取当前选择的 VCS 变更，生成 unified diff，发送到你配置的 AI 接口，并在提交继续前展示审查结果。
+            如果审查结果中包含问题，你可以查看详情后选择继续提交或取消提交。
+        </p>
+        <ul>
+            <li>启用后会在提交前自动执行 AI 代码审查。</li>
+            <li>支持兼容 OpenAI 的 Chat Completions API，可自定义 API 地址、API Key 和模型名称。</li>
+            <li>API Key 存储在 IDE PasswordSafe 中，不会明文写入普通配置文件。</li>
+            <li>支持自定义审查提示词，默认内置中文代码审查提示词。</li>
+            <li>重点关注真实 bug、安全风险、性能问题、资源泄漏和遗漏的测试。</li>
+        </ul>
+    ]]></description>
+
+    <!-- IntelliJ IDEA 2023.1 through 2024.1.x. Keep this aligned with patchPluginXml in build.gradle.kts. -->
+    <idea-version since-build="231" until-build="241.*" />
+
+    <change-notes><![CDATA[
+        <p>
+            Initial Marketplace release.
+        </p>
+        <ul>
+            <li>Added AI review integration for selected VCS changes before commit.</li>
+            <li>Added settings for API URL, API key, model, enable switch, and custom review prompt.</li>
+            <li>Added review result dialog that lets users continue or cancel the commit.</li>
+        </ul>
+        <p>
+            中文：首个 Marketplace 发布版本，支持提交前 AI 审查、接口配置、自定义提示词和审查结果确认对话框。
+        </p>
+    ]]></change-notes>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.vcs</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.lcb.ai_codereview_plugin.settings.AiCodeReviewSettings" />
+        <applicationConfigurable parentId="tools" instance="com.lcb.ai_codereview_plugin.settings.AiCodeReviewConfigurable" id="aiCodeReview" displayName="AI Code Review" />
+        <checkinHandlerFactory implementation="com.lcb.ai_codereview_plugin.checkin.AiCodeReviewCheckinHandlerFactory" />
+    </extensions>
+    
+</idea-plugin>
